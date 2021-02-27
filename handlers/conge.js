@@ -48,9 +48,48 @@ const findByValidationDate =  async (req,res) => {
   }
 };
 
+
+const updateConge = async (req,res) => {
+  const id = req.params.id;
+  if (!checkKeys(req.body, ["startDate", "endDate" ,"comment" ])) {
+    return res.status(400).send({
+      error: "invalid keys",
+    });
+  }
+  try {
+    await Conge.findByIdAndUpdate(id, req.body);
+    res.send({
+      message: `congé ${id} updated`,
+    });
+  } catch (err) {
+    res.status(500).send(err);
+  }
+}
+
+
+
+const updateStateConge = async (req,res) => {
+  const id = req.params.id;
+  if (!checkKeys(req.body, ["state"])) {
+    return res.status(400).send({
+      error: "invalid keys",
+    });
+  }
+  try {
+    await Conge.findByIdAndUpdate(id, req.body);
+    res.send({
+      message: `State of congé ${id} updated`,
+    });
+  } catch (err) {
+    res.status(500).send(err);
+  }
+}
+
   module.exports = {
     createConge,
     listConges,
     getCongeByID,
-    findByValidationDate
+    findByValidationDate,
+    updateConge,
+    updateStateConge
   };
