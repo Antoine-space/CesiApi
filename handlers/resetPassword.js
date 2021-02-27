@@ -1,4 +1,4 @@
-const User = require("../models/user");
+const User = require("../models/salary");
 const passwordResetToken = require('../models/resettoken');
 
 const resetPassword = async (req, res) => {

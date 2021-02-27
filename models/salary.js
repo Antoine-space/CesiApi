@@ -92,12 +92,11 @@ const SalarySchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref : "Service", 
     required : true
-  }
-  /*
+  },
   id_sites: {
     type: mongoose.Schema.Types.ObjectId,
     require: true,
-  }*/
+  }
 })
 
 SalarySchema.pre("save", async function (next) {

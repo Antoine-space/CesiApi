@@ -52,7 +52,7 @@ const deleteAllUsers = async (_, res) => {
 
 const updateUser = async (req, res) => {
   const id = req.params.id;
-  if (!checkKeys(req.body, ["name", "age"])) {
+  if (!checkKeys(req.body, ["firstname", "lastname" ,"dateBirth", "email" ])) {
     return res.status(400).send({
       error: "invalid keys",
     });
@@ -75,7 +75,7 @@ const updateAddrUser = async (req, res) => {
       error: "invalid keys",
     });
   }
-  User.findByIdAndUpdate(id, req.body)
+  Salary.findByIdAndUpdate(id, req.body)
     .then(() => {
       res.send({
         message: "nice !",
@@ -83,6 +83,8 @@ const updateAddrUser = async (req, res) => {
     })
     .catch((err) => res.status(500).send(err));
 };
+
+
 
 
 function checkKeys(body, allowedKeys) {
