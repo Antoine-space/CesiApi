@@ -32,4 +32,15 @@ const isRH = async (req, res, next) => {
   next();
 };
 
-module.exports = { isAuth, isRH };
+const isDR = async (req, res, next) => {
+  const token = req.header("Authorization").replace("Bearer ", "");
+  // "Bearer xxxxxxxxxxxxxxxxxxxxxxxxxxxx" => "xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  const decoded = jwt.verify(token, process.env.SECRET_JWT);
+
+  if (decoded.service != "dr") {
+    return res.status(401).send();
+  }
+  next();
+};
+
+module.exports = { isAuth, isRH, isDR };
