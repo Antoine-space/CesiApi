@@ -2,8 +2,23 @@ const Salary = require("../models/salary");
 const Conge = require("../models/conge");
 const {sendEmail} = require("../common/mailer")
 
+
+const getSalaryReponsable= async (req,res) => {
+  const id = req.params.id;
+  try {
+    let salaries = await Salary.find({ id_responsable : id});
+    if (!salaries) {
+      return res.status(404).send({
+        message: "les salariés du responsable sont introuvables",
+      });
+    }
+    res.send(salaries);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+};
   
-const getALLSalaryResponsable = async (req,res) => {
+const getALLCongéofSalaryofResponsable = async (req,res) => {
   const id = req.params.id;
   try {
     let salaries = await Salary.find({ id_responsable : id});
@@ -26,5 +41,6 @@ const getALLSalaryResponsable = async (req,res) => {
 
 
 module.exports = {
-  getALLSalaryResponsable,
+  getSalaryReponsable,
+  getALLCongéofSalaryofResponsable,
 };

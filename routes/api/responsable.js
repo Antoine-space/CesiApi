@@ -2,13 +2,18 @@ const express = require("express");
 
 
 const {
-    getALLSalaryResponsable
+  getSalaryReponsable,
+  getALLCongéofSalaryofResponsable,
   } = require("../../handlers/responsable");
 
 const router = new express.Router();
 
 router
-    .route("/responsable/:id")
-    .get(getALLSalaryResponsable);
+    .route("/responsable/salaries/:id")
+    .get(getSalaryReponsable);
+
+router
+    .route("/responsable/salaries/:id/conges")
+    .get(getALLCongéofSalaryofResponsable);
 
 module.exports = router
