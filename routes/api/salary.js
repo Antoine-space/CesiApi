@@ -31,4 +31,5 @@ router
       .route("/salaries/:id/address")
       .put(updateAddrUser);
 
+
 module.exports = router

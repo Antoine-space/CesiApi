@@ -1,6 +1,7 @@
 const Salary = require("../models/salary");
 const bcrypt = require("bcrypt");
-const {sendEmail} = require("../common/mailer")
+const {sendEmail} = require("../common/mailer");
+const { default: validator } = require("validator");
 
 
 const createUser = async (req, res) => {
@@ -83,7 +84,6 @@ const updateAddrUser = async (req, res) => {
     })
     .catch((err) => res.status(500).send(err));
 };
-
 
 
 

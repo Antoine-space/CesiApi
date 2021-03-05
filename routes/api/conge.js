@@ -6,7 +6,7 @@ const {
   getCongeByID,
   findByValidationDate,
   updateConge,
-  updateStateConge
+  updateStateConge,
 } = require("../../handlers/conge");
 
 const router = new express.Router();
@@ -28,5 +28,6 @@ router
 router
     .route("/conges/:id/state")
     .put(updateStateConge)
-    
+
+
 module.exports = router

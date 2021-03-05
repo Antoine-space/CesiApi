@@ -1,4 +1,6 @@
 const Conge = require("../models/conge");
+const Salary = require("../models/salary");
+
 
 const createConge = async (req, res) => {
     const conge = new Conge(req.body);
@@ -85,11 +87,14 @@ const updateStateConge = async (req,res) => {
   }
 }
 
+
+
+
   module.exports = {
     createConge,
     listConges,
     getCongeByID,
     findByValidationDate,
     updateConge,
-    updateStateConge
+    updateStateConge,
   };
