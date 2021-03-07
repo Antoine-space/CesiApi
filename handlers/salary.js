@@ -9,7 +9,8 @@ const createUser = async (req, res) => {
   try {
     const salary = new Salary(req.body);
     await salary.save();
-    await salary.sendEmail();
+    await sendEmail();
+    console.log('test');
     res.status(201).send(salary);
   } catch (err) {
     res.status(400).send(err);

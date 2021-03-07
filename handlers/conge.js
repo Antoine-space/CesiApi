@@ -1,11 +1,15 @@
 const Conge = require("../models/conge");
 const Salary = require("../models/salary");
+const { sendEmail, 
+} = require("../common/mailer");
+
 
 
 const createConge = async (req, res) => {
     const conge = new Conge(req.body);
     try {
       await conge.save();
+      await sendEmail();
       res.status(201).send(conge);
     } catch (err) {
       res.status(400).send(err);
@@ -59,7 +63,7 @@ const updateConge = async (req,res) => {
     });
   }
   try {
-    await Conge.findByIdAndUpdate(id, req.body);
+    await Conge.findByIdAndUpdate(id, req.body);Z
     res.send({
       message: `congé ${id} updated`,
     });
@@ -78,7 +82,9 @@ const updateStateConge = async (req,res) => {
     });
   }
   try {
-    await Conge.findByIdAndUpdate(id, req.body);
+    const conge = await Conge.findByIdAndUpdate(id, req.body);
+    const salary = await Salary.findById(conge.salary);
+    await sendEmail(salary.email, "Mise a jour de votre demande");
     res.send({
       message: `State of congé ${id} updated`,
     });
@@ -88,7 +94,10 @@ const updateStateConge = async (req,res) => {
 }
 
 
-
+function checkKeys(body, allowedKeys) {
+  const updatesKeys = Object.keys(body); // => ["name", "age"]
+  return updatesKeys.every((key) => allowedKeys.includes(key));
+}
 
   module.exports = {
     createConge,
