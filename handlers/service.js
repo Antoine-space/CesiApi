@@ -68,7 +68,26 @@ const byID = (populate) => {
     }
   };
 };
-/*test*/ 
+
+const getAllServices = async(req, res) => {
+  const populate = parseInt(req.query.populate);
+  let services;
+  try {
+    if (populate) {
+      services = await Service.find().populate("responsable");
+    } else {
+      services = await Service.find();
+    }
+    res.send(services);
+  } catch (err) {
+    res.status(400).send({
+      message: "Error c'ant get all services",
+      error: err,
+    });
+  }
+},
+
+
 function checkKeys(body, allowedKeys) {
   const updatesKeys = Object.keys(body); // => ["NameService", "age"]
   return updatesKeys.every((key) => allowedKeys.includes(key));
@@ -78,5 +97,6 @@ module.exports = {
     createService,
     deleteServiceByID,
     updateService,
-    byID
+    byID,
+    getAllServices
   };

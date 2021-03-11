@@ -1,12 +1,14 @@
 const express = require("express");
 
 const {
-  createUser,
-  getUserByID,
-  listUsers,
-  deleteAllUsers,
-  updateUser,
-  updateAddrUser,
+    createUser,
+    getUserByID,
+    listUsers,
+    deleteSalary,
+    updateUser,
+    updateAddrUser,
+    updatePasswordSalary,
+    
 } = require("../../handlers/salary");
 const { isAuth, isRH } = require("../../middleware/auth");
 
@@ -16,7 +18,8 @@ router
     .route("/salaries")
     .get(listUsers)
     .post(createUser)
-    .delete(deleteAllUsers);
+    .delete(deleteSalary)
+    
 
 router.
     route("/salaries/me")
@@ -30,6 +33,10 @@ router
 router
       .route("/salaries/:id/address")
       .put(updateAddrUser);
+      
 
+router
+        .route("/salaries/password/:id")
+        .put(updatePasswordSalary);
 
 module.exports = router

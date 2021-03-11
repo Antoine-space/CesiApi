@@ -4,7 +4,7 @@ const { sendEmail,
 } = require("../common/mailer");
 
 
-
+//POST
 const createConge = async (req, res) => {
     const conge = new Conge(req.body);
     try {
@@ -16,7 +16,7 @@ const createConge = async (req, res) => {
     }
   };
 
-
+// Get
 const listConges = async (_, res) => {
   try {
     let conges = await Conge.find();
@@ -55,6 +55,7 @@ const findByValidationDate =  async (req,res) => {
 };
 
 
+//update
 const updateConge = async (req,res) => {
   const id = req.params.id;
   if (!checkKeys(req.body, ["startDate", "endDate" ,"comment" ])) {
@@ -71,8 +72,6 @@ const updateConge = async (req,res) => {
     res.status(500).send(err);
   }
 }
-
-
 
 const updateStateConge = async (req,res) => {
   const id = req.params.id;
@@ -92,6 +91,8 @@ const updateStateConge = async (req,res) => {
     res.status(500).send(err);
   }
 }
+
+
 
 
 function checkKeys(body, allowedKeys) {

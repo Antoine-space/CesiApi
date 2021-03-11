@@ -1,6 +1,8 @@
 const Salary = require("../models/salary");
 const bcrypt = require("bcrypt");
 var jwt = require('jsonwebtoken');
+const Service = require('../models/service');
+const { byID } = require("./service");
 
 const login = async (req, res) => {
   let email = req.body.email;
@@ -19,18 +21,34 @@ const login = async (req, res) => {
       return res.status(401).send(err);
     }
 
+    var service =  Service.findOne({_id : salary.service})
+
     var token = jwt.sign({
-        user_id: salary.id,
-        service: "rh"
+        _id: salary.id,
+        service: service.name
     }, process.env.SECRET_JWT, {expiresIn: 60*60});
 
 
     res.send({
       token: token,
+      service: service.name
     });
   } catch (error) {
-    res.status(500).send(error);
+    res.status(401).send("Email ou mot de passe incorrect");
   }
 };
 
-module.exports = { login };
+
+const logout = async (req, res) => {
+  try {
+    const token = req.body.token;
+    token = "";
+    res.send({
+      token: token,
+    });
+  } catch (error) {
+    res.status(401).send("Impossible de se déconnecté");
+  }
+};
+
+module.exports = { login, logout };
