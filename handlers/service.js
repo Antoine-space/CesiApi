@@ -85,7 +85,7 @@ const getAllServices = async(req, res) => {
       error: err,
     });
   }
-},
+};
 
 
 function checkKeys(body, allowedKeys) {

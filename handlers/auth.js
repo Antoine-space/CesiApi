@@ -11,7 +11,7 @@ const login = async (req, res) => {
   try {
     let salary = await Salary.findOne({
       email: email,
-    });
+    }).populate("service");
     if (!salary) {
       res.status(401).send("email");
     }
@@ -21,17 +21,16 @@ const login = async (req, res) => {
       return res.status(401).send(err);
     }
 
-    var service =  Service.findOne({_id : salary.service})
 
     var token = jwt.sign({
-        _id: salary.id,
-        service: service.name
+        user_id: salary.id,
+        service: salary.service.name
     }, process.env.SECRET_JWT, {expiresIn: 60*60});
 
 
     res.send({
       token: token,
-      service: service.name
+      salary: salary
     });
   } catch (error) {
     res.status(401).send("Email ou mot de passe incorrect");

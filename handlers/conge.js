@@ -1,7 +1,9 @@
 const Conge = require("../models/conge");
 const Salary = require("../models/salary");
 const { sendEmail, 
-} = require("../common/mailer");
+  CongeRequestStatusUpdateToEmployee,
+  CongeRequestStatusUpdateToManager,
+  NewCongeRequestToRh} = require("../common/mailer");
 
 
 //POST
@@ -81,12 +83,32 @@ const updateStateConge = async (req,res) => {
     });
   }
   try {
-    const conge = await Conge.findByIdAndUpdate(id, req.body);
-    const salary = await Salary.findById(conge.salary);
-    await sendEmail(salary.email, "Mise a jour de votre demande");
+    const stateConge = await Conge.findById(id).status;
+    const conge = await Conge.findById(id);
+    if(!conge)
+    {
+      throw new Error ("Congé invalide")
+    }
+    updateKeys = Object.keys(req.body);
+    updateKeys.forEach(key => (holiday[key] = req.body[key]));
+    await holiday.save();
+
     res.send({
       message: `State of congé ${id} updated`,
     });
+
+    if(stateConge != req.body.status)
+    {
+      /*ENVOIE MAIL AU SALARIE */
+      CongeRequestStatusUpdateToEmployee(id);
+      /*ENVOIE MAIL AU RESPONSABLE */
+      CongeRequestStatusUpdateToManager(id);
+      if(req.body.status == "date_accepted")
+      {
+        /* ENVOIE MAIL RH*/
+        NewCongeRequestToRh(id)
+      }
+    }
   } catch (err) {
     res.status(500).send(err);
   }

@@ -8,6 +8,7 @@ const {
     updateUser,
     updateAddrUser,
     updatePasswordSalary,
+    getMe,
     
 } = require("../../handlers/salary");
 const { isAuth, isRH } = require("../../middleware/auth");
@@ -23,7 +24,11 @@ router
 
 router.
     route("/salaries/me")
-    .get(isAuth, getUserByID);
+    .get(isAuth, getMe);
+
+router.
+    route("/salaries/me")
+    .get(isAuth, getMe);
 
 router
     .route("/salaries/:id")

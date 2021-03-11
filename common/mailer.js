@@ -1,4 +1,6 @@
 const nodemailer = require("nodemailer");
+const Conge = require("../handlers/conge");
+const Salary = require("../handlers/salary");
 
 // create reusable transporter object using the default SMTP transport
 let transporter = nodemailer.createTransport({
@@ -10,20 +12,103 @@ let transporter = nodemailer.createTransport({
     pass: process.env.PASSWORD_MAILER, // generated ethereal password
   },
 });
+const date = new Date();
 
 
 
-const sendEmail = async (to, subject) => {
+const sendEmail = async (to, subject, html) => {
   let info = await transporter.sendMail({
     from: process.env.EMAIL_MAILER,
     to: to,
     subject: subject,
-    text: "Hello world?",
-    html: "<b>Hello world?</b>",
+    html:html,
   });
   return info;
 };
 
+const CongeRequestStatusUpdateToEmployee = (CongeId) => {
+  return async (req, res) => {
+    conge = await Conge.findById(CongeId).populate(
+      "salary"
+    );
+
+    let html = `<b>Le status de votre demande de congé du ${date.toLocaleDateString(
+      conge.startDate
+    )} au ${date.toLocaleDateString(conge.endDate)} a changé de status: ${
+      conge.state
+    }</b>`;
+    html += `<br>`;
+    html += `Demande de congé :`;
+    sendMail(
+      conge.salary.email,
+      "Votre demande de congé a changé de status",
+      html
+    );
+  };
+};
+
+const CongeRequestStatusUpdateToManager = (CongeId) => {
+  return async (req, res) => {
+    conge = await Conge.findById(CongeId).populate({
+      path: "salary",
+      populate: {
+        path: "service",
+        populate: {
+          path: "id_reponsable",
+        },
+      },
+    });
+
+    let html = `<b>Le status de la demande de congé de ${
+      conge.salary.lastname
+    } ${conge.salary.firstName} du ${date.toLocaleDateString(
+      conge.startDate
+    )} au ${date.toLocaleDateString(conge.endDate)} a changé de status: ${
+      conge.state
+    }</b>`;
+    html += `<br>`;
+    html += `Demande de congé :`;
+    sendMail(
+      conge.salary.service.id_responsable.email,
+      `Le status de la demande de congé de ${conge.salary.lastname} ${conge.salary.firstname} a changé`,
+      html
+    );
+  };
+};
 
 
-module.exports = { sendEmail };
+const NewCongeRequestToRh = (CongeId) => {
+    return async (req, res) => {
+    conge = await Conge.findById(CongeId).populate(
+      "salary"
+    );
+    SalaryServiceRH = await Salary.find({
+      id_service: process.env.ID_RH,
+    });
+
+    RHMail = await SalaryServiceRH.map((RH) => {
+      return RH.email;
+    });
+
+    //Créatrion Mail
+    let html = `<b>Une nouvelle demande de congé de ${
+      conge.salary.lastname
+    } ${conge.salary.firstname} du ${date.toLocaleDateString(
+      conge.startDate
+    )} au ${date.toLocaleDateString(
+      conge.endDate
+    )} est en attente de validation</b>`;
+    html += `<br>`;
+    html += `Demande de congé :`;
+
+    //Envoie Mail
+    sendMail(
+      RHMail,
+      `Une nouvelle demande de congé de ${conge.salary.lastname} ${conge.salary.firstname} est en attente de validation`,
+      html
+    );
+  }
+}
+
+
+module.exports = { sendEmail, CongeRequestStatusUpdateToEmployee, CongeRequestStatusUpdateToManager, NewCongeRequestToRh};

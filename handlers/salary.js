@@ -2,6 +2,7 @@ const Salary = require("../models/salary");
 const bcrypt = require("bcrypt");
 const {sendEmail} = require("../common/mailer");
 const { default: validator } = require("validator");
+const {  } = require("../common/mailer")
 
 //POST
 const createUser = async (req, res) => {
@@ -36,7 +37,7 @@ const listUsers = async (req, res) => {
     });
   }
 };
-
+//Pas utilisé
 const getUserByID = async (req, res) => {
   const id = req.params.id;
   const populate = parseInt(req.query.populate);
@@ -49,6 +50,27 @@ const getUserByID = async (req, res) => {
       salary = await Salary.findById(id);
     }
 
+    if (!salary) {
+      throw "None ID SALARY";
+    }
+
+    res.send(salary);
+  } catch (err) {
+    res.status(400).send({
+      message: `Error : can't get employee with id (${id}) `,
+      error: err,
+    });
+  }
+};
+
+
+const getMe = async (req, res) => {
+  const id = req.params.id;
+  let salary;
+  try {
+
+      salary = await Salary.findById(id)
+        .populate("service")
     if (!salary) {
       throw "None ID SALARY";
     }
@@ -152,7 +174,7 @@ const updatePasswordSalary= async (req, res) => {
       error: err,
     });
   }
-},
+};
 
 function checkKeys(body, allowedKeys) {
   const updatesKeys = Object.keys(body); // => ["name", "age"]
@@ -167,5 +189,6 @@ module.exports = {
   updateUser,
   updateAddrUser,
   updatePasswordSalary,
-  deleteSalary
+  deleteSalary,
+  getMe
 };
