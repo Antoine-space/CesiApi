@@ -7,6 +7,8 @@ const {
   findByValidationDate,
   updateConge,
   updateStateConge,
+  getCongeByUser,
+  deleteConge
 } = require("../../handlers/conge");
 
 const router = new express.Router();
@@ -24,6 +26,12 @@ router
     .route("/conges/:id")   
     .get(getCongeByID)
     .put(updateConge)
+    .delete(deleteConge)
+
+router
+    .route("/conges/salary/:id")   
+    .get(getCongeByUser)
+ 
 
 router
     .route("/conges/:id/state")

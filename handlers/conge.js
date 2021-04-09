@@ -11,7 +11,7 @@ const createConge = async (req, res) => {
     const conge = new Conge(req.body);
     try {
       await conge.save();
-      await sendEmail();
+      
       res.status(201).send(conge);
     } catch (err) {
       res.status(400).send(err);
@@ -44,6 +44,23 @@ const getCongeByID = async (req, res) => {
   }
 };
 
+const getCongeByUser = async (req, res) => {
+  const id = req.params.id;
+  try {
+    if ( id &&! (await Salary.exists({ _id: id }).catch((err) => {throw "Invalid employee id";}))) {
+      throw "Invalid employee id";
+    }
+    congé = await Conge.find({ salary: id });
+    res.send(congé);
+  } catch (err) {
+    res.status(400).send({
+      message: "Error when geting a leaves by id",
+      error: err,
+    });
+  }
+};
+
+
 const findByValidationDate =  async (req,res) => {
   const date = req.params.date;
   try {
@@ -56,6 +73,24 @@ const findByValidationDate =  async (req,res) => {
   }
 };
 
+const deleteConge = async(req, res) => {
+  const id = req.params.id;
+  try {
+    conge = await Conge.findById(id);
+    if (!conge) {
+      throw "Invalid leaves id";
+    }
+    conge.remove();
+    res.send({
+      message: `Holiday deleted`,
+    });
+  } catch (err) {
+    res.status(400).send({
+      message: "Error when deleting a leaves",
+      error: err,
+    });
+  }
+}
 
 //update
 const updateConge = async (req,res) => {
@@ -126,7 +161,9 @@ function checkKeys(body, allowedKeys) {
     createConge,
     listConges,
     getCongeByID,
+    getCongeByUser,
     findByValidationDate,
     updateConge,
     updateStateConge,
+    deleteConge
   };

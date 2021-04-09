@@ -16,7 +16,7 @@ const date = new Date();
 
 
 
-const sendEmail = async (to, subject, html) => {
+async function sendEmail(to, subject, html) {
   let info = await transporter.sendMail({
     from: process.env.EMAIL_MAILER,
     to: to,
@@ -39,7 +39,7 @@ const CongeRequestStatusUpdateToEmployee = (CongeId) => {
     }</b>`;
     html += `<br>`;
     html += `Demande de congé :`;
-    sendMail(
+    sendEmail(
       conge.salary.email,
       "Votre demande de congé a changé de status",
       html
@@ -68,7 +68,7 @@ const CongeRequestStatusUpdateToManager = (CongeId) => {
     }</b>`;
     html += `<br>`;
     html += `Demande de congé :`;
-    sendMail(
+    sendEmail(
       conge.salary.service.id_responsable.email,
       `Le status de la demande de congé de ${conge.salary.lastname} ${conge.salary.firstname} a changé`,
       html
@@ -102,7 +102,7 @@ const NewCongeRequestToRh = (CongeId) => {
     html += `Demande de congé :`;
 
     //Envoie Mail
-    sendMail(
+    sendEmail(
       RHMail,
       `Une nouvelle demande de congé de ${conge.salary.lastname} ${conge.salary.firstname} est en attente de validation`,
       html
